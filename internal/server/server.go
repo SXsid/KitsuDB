@@ -14,12 +14,13 @@ var conCount int
 
 func handleConn(conn net.Conn) {
 	defer func() {
-		conn.Close()
+		if err := conn.Close(); err != nil {
+			log.Println("error while closing the connection ")
+		}
 		conCount -= 1
 		log.Println("user", conn.RemoteAddr(), "disconnected. concurrent:", conCount)
 	}()
 	for {
-		// collection stream in memory buffer
 		buff := make([]byte, 1024)
 
 		n, err := conn.Read(buff)
@@ -47,7 +48,6 @@ func Run() {
 	}
 	log.Println("kitsu is ready to eat data on ", config.Cnfg.Host, ":", config.Cnfg.Port)
 	for {
-		// blocking  for new connection
 		conn, err := listner.Accept()
 		if err != nil {
 			log.Println("error while accepting new connection \n error", err.Error())
