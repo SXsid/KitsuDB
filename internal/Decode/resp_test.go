@@ -1,4 +1,4 @@
-package resp
+package decode
 
 import (
 	"reflect"

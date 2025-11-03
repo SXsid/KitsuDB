@@ -1,12 +1,12 @@
 package server
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"net"
 	"strconv"
 
+	handler "github.com/SXsid/kitsuDB/internal/Handler"
 	"github.com/SXsid/kitsuDB/internal/config"
 )
 
@@ -20,23 +20,16 @@ func handleConn(conn net.Conn) {
 		conCount -= 1
 		log.Println("user", conn.RemoteAddr(), "disconnected. concurrent:", conCount)
 	}()
-	for {
-		buff := make([]byte, 1024)
 
-		n, err := conn.Read(buff)
+	for {
+		cmd, err := handler.ReadCommand(conn)
 		if err != nil {
 			if err != io.EOF {
-				log.Printf("error while reading the command \n error:%v", err)
+				handler.RespondWithError(err, conn)
 			}
 			break
 		}
-		res := buff[:n]
-		_, err = conn.Write(res)
-		fmt.Println(string(res))
-		if err != nil {
-			log.Printf("error while responding to client %s \b error:%v", conn.RemoteAddr(), err)
-			break
-		}
+		handler.Respond(cmd, conn)
 	}
 }
 

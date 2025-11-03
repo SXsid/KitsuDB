@@ -1,8 +1,9 @@
-package resp
+package decode
 
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"strconv"
 )
 
@@ -31,6 +32,23 @@ func Parser(data []byte) (any, int, error) {
 	return nil, 0, nil
 }
 
+func DecodeArrayString(data []byte) ([]string, error) {
+	value, err := Decoder(data)
+	if err != nil {
+		return nil, err
+	}
+	if value == nil {
+		return nil, fmt.Errorf("invalid input %v", err)
+	}
+	// type cast in array of any
+	result_array := value.([]any)
+	Array_strings := make([]string, len(result_array))
+	for i := range result_array {
+		Array_strings[i] = result_array[i].(string)
+	}
+	return Array_strings, nil
+}
+
 func ReadArray(data []byte) ([]any, int, error) {
 	// delta is the pos where the content length ended form 1 to first\r\n
 	count, delta, err := ReadNumber(data)
@@ -38,7 +56,7 @@ func ReadArray(data []byte) ([]any, int, error) {
 	if err != nil {
 		return nil, 0, err
 	}
-	var values []any = make([]any, count)
+	values := make([]any, count)
 	for i := range values {
 		item, delta, err := Parser(data[pos:])
 		if err != nil {
