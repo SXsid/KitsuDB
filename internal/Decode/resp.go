@@ -38,7 +38,7 @@ func DecodeArrayString(data []byte) ([]string, error) {
 		return nil, err
 	}
 	if value == nil {
-		return nil, fmt.Errorf("invalid input %v", err)
+		return nil, fmt.Errorf("'%s' is not a valid command", string(data))
 	}
 	// type cast in array of any
 	result_array := value.([]any)

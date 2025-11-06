@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 
-	decode "github.com/SXsid/kitsuDB/internal/Decode"
 	"github.com/SXsid/kitsuDB/internal/config"
 	"github.com/SXsid/kitsuDB/internal/server"
 )
@@ -18,6 +18,7 @@ func setUpFlags() {
 func main() {
 	setUpFlags()
 	fmt.Println("🦊 Kitsu is waking up!")
-	fmt.Println(decode.Decoder([]byte("*3\r\n$3\r\nSET\r\n$3\r\nkey\r\n$5\r\nvalue\r\n")))
-	server.Run()
+	if err := server.Run_server(); err != nil {
+		log.Fatal(err)
+	}
 }
