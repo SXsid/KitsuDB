@@ -18,7 +18,7 @@ func setUpFlags() {
 func main() {
 	setUpFlags()
 	fmt.Println("🦊 Kitsu is waking up!")
-	if err := server.Run_server(); err != nil {
+	if err := server.Run(); err != nil {
 		log.Fatal(err)
 	}
 }
